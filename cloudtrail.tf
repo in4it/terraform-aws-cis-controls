@@ -4,7 +4,8 @@ resource "aws_cloudwatch_log_group" "cloudtrail_events" {
 }
 
 data "aws_iam_policy_document" "cloudtrail_key_policy" {
-  policy_id = "Key policy created by CloudTrail"
+  policy_id     = "Key policy created by CloudTrail"
+  override_json = var.cloudtrail_kms_policy
 
   statement {
     sid = "Enable IAM User Permissions"
@@ -116,7 +117,7 @@ resource "aws_kms_key" "cloudtrail" {
   deletion_window_in_days = 30
   is_enabled              = true
   enable_key_rotation     = true
-  policy                  = "${var.cloudtrail_kms_policy != "" ? "${var.cloudtrail_kms_policy}" : "${data.aws_iam_policy_document.cloudtrail_key_policy.json}"}"
+  policy                  = data.aws_iam_policy_document.cloudtrail_key_policy.json
   tags                    = var.tags
 }
 
@@ -171,7 +172,8 @@ resource "aws_cloudtrail" "cloudtrail" {
   cloud_watch_logs_group_arn    = aws_cloudwatch_log_group.cloudtrail_events.arn
   cloud_watch_logs_role_arn     = aws_iam_role.cloudwatch_delivery.arn
   name                          = "${var.resource_name_prefix}-trail"
-  s3_bucket_name                = var.cloudtrail_s3_bucket_name
+  s3_key_prefix                 = "cloudtrail"
+  s3_bucket_name                = var.cloudtrail_s3_bucket_name != "" ? var.cloudtrail_s3_bucket_name : aws_s3_bucket.audit[0].id
   is_multi_region_trail         = true
   include_global_service_events = true
   enable_log_file_validation    = true

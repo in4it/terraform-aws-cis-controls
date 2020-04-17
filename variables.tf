@@ -3,6 +3,29 @@ variable "resource_name_prefix" {
   default     = "aws-cis"
 }
 
+# SNS
+variable sns_arn {
+  description = "SNS for CIS notifications"
+}
+
+# S3
+variable s3_enabled {
+  default = true
+}
+
+variable audit_log_bucket_custom_policy_json {
+  default = ""
+}
+
+# AWS Config
+variable config_enabled {
+  default = true
+}
+
+variable include_global_resource_types {
+  default = true
+}
+
 # CloudTrail
 variable cloudtrail_log_group_name {
   description = "CloudTrail LogGroup name"
@@ -15,6 +38,7 @@ variable "clodtrail_event_selector_type" {
 
 variable "cloudtrail_s3_bucket_name" {
   description = "S3 bucket name for CloudTrail logs"
+  default     = ""
 }
 
 variable aws_account_id {

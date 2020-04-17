@@ -5,19 +5,22 @@ https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-control
 
 ### Controls covered:
 - 1.1 Avoid the use of the "root" account
-- 1.5 Ensure IAM password policy requires at least one uppercase letter 
+- 1.5 Ensure IAM password policy requires at least one uppercase letter
 - 1.6 Ensure IAM password policy requires at least one lowercase letter
-- 1.7 Ensure IAM password policy requires at least one symbol 
-- 1.8 Ensure IAM password policy requires at least one number 
+- 1.7 Ensure IAM password policy requires at least one symbol
+- 1.8 Ensure IAM password policy requires at least one number
 - 1.9 Ensure IAM password policy requires a minimum length of 14 or greater 1.9
-- 1.10 Ensure IAM password policy prevents password reuse 
-- 1.11 Ensure IAM password policy expires passwords within 90 days or less 
+- 1.10 Ensure IAM password policy prevents password reuse
+- 1.11 Ensure IAM password policy expires passwords within 90 days or less
 - 2.1 Ensure CloudTrail is enabled in all Regions
 - 2.2 Ensure CloudTrail log file validation is enabled
+- 2.3 Ensure the S3 bucket CloudTrail logs to is not publicly accessible
 - 2.4 Ensure CloudTrail trails are integrated with Amazon CloudWatch Logs
+- 2.5 Ensure AWS Config is enabled
+- 2.6 Ensure S3 bucket access logging is enabled on the CloudTrail S3 bucket
 - 2.7 Ensure CloudTrail logs are encrypted at rest using AWS KMS CMKs
 - 3.1 Ensure a log metric filter and alarm exist for unauthorized API calls
-- 3.2 Ensure a log metric filter and alarm exist for AWS Management Console sign-in without MFA 
+- 3.2 Ensure a log metric filter and alarm exist for AWS Management Console sign-in without MFA
 - 3.3 Ensure a log metric filter and alarm exist for usage of "root" account
 - 3.4 Ensure a log metric filter and alarm exist for IAM policy changes
 - 3.5 Ensure a log metric filter and alarm exist for CloudTrail configuration changes
@@ -29,4 +32,4 @@ https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-control
 - 3.11 Ensure a log metric filter and alarm exist for changes to Network Access Control Lists (NACL)
 - 3.12 Ensure a log metric filter and alarm exist for changes to network gateways
 - 3.13 Ensure a log metric filter and alarm exist for route table changes
-- 3.14 Ensure a log metric filter and alarm exist for VPC changes 
+- 3.14 Ensure a log metric filter and alarm exist for VPC changes
