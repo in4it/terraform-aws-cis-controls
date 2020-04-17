@@ -70,7 +70,7 @@ resource "aws_config_delivery_channel" "bucket" {
 
   name = var.resource_name_prefix
 
-  s3_bucket_name = aws_s3_bucket.audit[0].arn
+  s3_bucket_name = var.config_s3_bucket_name != "" ? var.config_s3_bucket_name : aws_s3_bucket.audit[0].id
   s3_key_prefix  = "config"
   sns_topic_arn  = var.sns_arn
 

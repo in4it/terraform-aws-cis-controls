@@ -22,6 +22,10 @@ variable config_enabled {
   default = true
 }
 
+variable config_s3_bucket_name {
+  default = ""
+}
+
 variable include_global_resource_types {
   default = true
 }
