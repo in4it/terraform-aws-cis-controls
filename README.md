@@ -50,5 +50,5 @@ https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-control
 | aws\_account\_id | AWS account ID | string | `""` | yes |
 | region | AWS Region | string | `""` | yes |
 | cloudtrail\_kms\_policy | Override policy for the CloudTrail KMS | string | `""` | no | 
-| alerting\_enabled | Enable CloudWatch alarms | `"true"` | no |
-| alarm\_namespace | CloudWatch alarm namespace | `"CISBenchmark"` | no |
+| alerting\_enabled | Enable CloudWatch alarms | string | `"true"` | no |
+| alarm\_namespace | CloudWatch alarm namespace | string |`"CISBenchmark"` | no |
