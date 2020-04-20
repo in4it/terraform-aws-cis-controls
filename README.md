@@ -41,7 +41,7 @@ https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-control
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | sns\_arn | CIS notifications SNS arn | string | `"individual"` | yes |
-| s3\_enabled | Enable S3 Bucket setup for audit logs and Cloudtrail |  | `"true"` | no |
+| s3\_enabled | Enable S3 Bucket setup for audit logs and CloudTrail |  | `"true"` | no |
 | audit\_log\_bucket\_custom\_policy\_json | Override policy for the audit log bucket. | string | `""` | no |
 | config\_enabled | Enable AWS config setup | string | `"true"` | no |
 | include\_global\_resource\_types | AWS Config include global resource types | string | `"true"` | no |
@@ -51,4 +51,4 @@ https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-control
 | region | AWS Region | string | `""` | yes |
 | cloudtrail\_kms\_policy | Override policy for the CloudTrail KMS | string | `""` | no | 
 | alerting\_enabled | Enable CloudWatch alarms | `"true"` | no |
-| alarm_namespace | CloudWatch alarm namespace | `"CISBenchmark"` | no |
+| alarm\_namespace | CloudWatch alarm namespace | `"CISBenchmark"` | no |
