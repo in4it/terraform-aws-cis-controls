@@ -33,3 +33,22 @@ https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-control
 - 3.12 Ensure a log metric filter and alarm exist for changes to network gateways
 - 3.13 Ensure a log metric filter and alarm exist for route table changes
 - 3.14 Ensure a log metric filter and alarm exist for VPC changes
+
+
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| sns\_arn | CIS notifications SNS arn | string | `"individual"` | yes |
+| s3\_enabled | Enable S3 Bucket setup for audit logs and Cloudtrail |  | `"true"` | no |
+| audit\_log\_bucket\_custom\_policy\_json | Override policy for the audit log bucket. | string | `""` | no |
+| config\_enabled | Enable AWS config setup | string | `"true"` | no |
+| include\_global\_resource\_types | AWS Config include global resource types | string | `"true"` | no |
+| cloudtrail\_log\_group\_name | CloudTrail LogGroup name | string | `""` | yes |
+| cloudtrail\_event\_selector\_type | CloudTrail event selector | string | `"ALL"` | no |
+| aws\_account\_id | AWS account ID | string | `""` | yes |
+| region | AWS Region | string | `""` | yes |
+| cloudtrail\_kms\_policy | Override policy for the CloudTrail KMS | string | `""` | no | 
+| alerting\_enabled | Enable CloudWatch alarms | `"true"` | no |
+| alarm_namespace | CloudWatch alarm namespace | `"CISBenchmark"` | no |

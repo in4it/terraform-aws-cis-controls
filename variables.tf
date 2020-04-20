@@ -22,10 +22,6 @@ variable config_enabled {
   default = true
 }
 
-variable config_s3_bucket_name {
-  default = ""
-}
-
 variable include_global_resource_types {
   default = true
 }
@@ -38,11 +34,6 @@ variable cloudtrail_log_group_name {
 variable "clodtrail_event_selector_type" {
   description = "Log type for event selectors"
   default     = "All"
-}
-
-variable "cloudtrail_s3_bucket_name" {
-  description = "S3 bucket name for CloudTrail logs"
-  default     = ""
 }
 
 variable aws_account_id {

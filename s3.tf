@@ -58,9 +58,10 @@ data "aws_iam_policy_document" "audit_log" {
 }
 
 resource "aws_s3_bucket_policy" "audit_log" {
-  count  = var.s3_enabled ? 1 : 0
-  bucket = aws_s3_bucket.audit[0].id
-  policy = data.aws_iam_policy_document.audit_log[0].json
+  depends_on = ["aws_s3_bucket_public_access_block.audit"]
+  count      = var.s3_enabled ? 1 : 0
+  bucket     = aws_s3_bucket.audit[0].id
+  policy     = data.aws_iam_policy_document.audit_log[0].json
 }
 
 resource "aws_s3_bucket" "access_log" {
@@ -74,8 +75,8 @@ resource "aws_s3_bucket" "access_log" {
       }
     }
   }
-
-  tags = var.tags
+  force_destroy = true
+  tags          = var.tags
 }
 
 # 2.3 – Ensure the S3 bucket CloudTrail logs to is not publicly accessible
@@ -103,6 +104,7 @@ resource "aws_s3_bucket" "audit" {
       }
     }
   }
+  force_destroy = true
 
   logging {
     target_bucket = aws_s3_bucket.access_log[0].id

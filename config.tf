@@ -18,6 +18,7 @@ resource "aws_iam_role" "recorder" {
 
 #https://docs.aws.amazon.com/config/latest/developerguide/iamrole-permissions.html
 data "aws_iam_policy_document" "recorder_publish_policy" {
+  depends_on = [aws_s3_bucket.audit[0]]
   statement {
     actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.audit[0].arn}/config/AWSLogs/${var.aws_account_id}/*"]
@@ -70,7 +71,7 @@ resource "aws_config_delivery_channel" "bucket" {
 
   name = var.resource_name_prefix
 
-  s3_bucket_name = var.config_s3_bucket_name != "" ? var.config_s3_bucket_name : aws_s3_bucket.audit[0].id
+  s3_bucket_name = aws_s3_bucket.audit[0].id
   s3_key_prefix  = "config"
   sns_topic_arn  = var.sns_arn
 
@@ -78,7 +79,11 @@ resource "aws_config_delivery_channel" "bucket" {
     delivery_frequency = "One_Hour"
   }
 
-  depends_on = [aws_config_configuration_recorder.recorder[0]]
+  depends_on = [
+    aws_config_configuration_recorder.recorder[0],
+    aws_s3_bucket_policy.audit_log[0],
+    aws_s3_bucket_public_access_block.audit[0]
+  ]
 }
 
 resource "aws_config_configuration_recorder_status" "recorder" {

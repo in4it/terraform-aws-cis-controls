@@ -173,7 +173,7 @@ resource "aws_cloudtrail" "cloudtrail" {
   cloud_watch_logs_role_arn     = aws_iam_role.cloudwatch_delivery.arn
   name                          = "${var.resource_name_prefix}-trail"
   s3_key_prefix                 = "cloudtrail"
-  s3_bucket_name                = var.cloudtrail_s3_bucket_name != "" ? var.cloudtrail_s3_bucket_name : aws_s3_bucket.audit[0].id
+  s3_bucket_name                = aws_s3_bucket.audit[0].id
   is_multi_region_trail         = true
   include_global_service_events = true
   enable_log_file_validation    = true
@@ -193,6 +193,9 @@ resource "aws_cloudtrail" "cloudtrail" {
       values = ["arn:aws:lambda"]
     }
   }
-
+  depends_on = [
+    aws_s3_bucket_policy.audit_log[0],
+    aws_s3_bucket_public_access_block.audit[0]
+  ]
   tags = var.tags
 }
