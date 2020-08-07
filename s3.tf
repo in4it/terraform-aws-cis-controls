@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "audit_log" {
 }
 
 resource "aws_s3_bucket_policy" "audit_log" {
-  depends_on = ["aws_s3_bucket_public_access_block.audit"]
+  depends_on = [aws_s3_bucket_public_access_block.audit]
   count      = var.s3_enabled ? 1 : 0
   bucket     = aws_s3_bucket.audit[0].id
   policy     = data.aws_iam_policy_document.audit_log[0].json
