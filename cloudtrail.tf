@@ -123,7 +123,7 @@ resource "aws_kms_key" "cloudtrail" {
 
 resource "aws_kms_alias" "cloudtrail" {
   name          = "alias/${var.resource_name_prefix}-cloudtrail"
-  target_key_id = "${aws_kms_key.cloudtrail.key_id}"
+  target_key_id = aws_kms_key.cloudtrail.key_id
 }
 
 data "aws_iam_policy_document" "cloudwatch_delivery_assume_policy" {
@@ -169,7 +169,7 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
 # 2.7 – Ensure CloudTrail logs are encrypted at rest using AWS KMS CMKs
 
 resource "aws_cloudtrail" "cloudtrail" {
-  cloud_watch_logs_group_arn    = aws_cloudwatch_log_group.cloudtrail_events.arn
+  cloud_watch_logs_group_arn    = "${aws_cloudwatch_log_group.cloudtrail_events.arn}:*"
   cloud_watch_logs_role_arn     = aws_iam_role.cloudwatch_delivery.arn
   name                          = "${var.resource_name_prefix}-trail"
   s3_key_prefix                 = "cloudtrail"
