@@ -67,17 +67,23 @@ resource "aws_s3_bucket_policy" "audit_log" {
 resource "aws_s3_bucket" "access_log" {
   count  = var.s3_enabled ? 1 : 0
   bucket = "${var.resource_name_prefix}-access-logs"
+  force_destroy = true
+  tags          = var.tags
+}
+resource "aws_s3_bucket_acl" "access_log" {
+  count  = var.s3_enabled ? 1 : 0
+  bucket = aws_s3_bucket.access_log[0].id
   acl    = "log-delivery-write"
-  server_side_encryption_configuration {
+}
+resource "aws_s3_bucket_server_side_encryption_configuration" "access_log" {
+   count  = var.s3_enabled ? 1 : 0
+   bucket = aws_s3_bucket.access_log[0].bucket
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm = "AES256"
       }
     }
   }
-  force_destroy = true
-  tags          = var.tags
-}
 
 # 2.3 – Ensure the S3 bucket CloudTrail logs to is not publicly accessible
 # 2.6 – Ensure S3 bucket access logging is enabled on the CloudTrail S3 bucket
@@ -95,27 +101,38 @@ resource "aws_s3_bucket_public_access_block" "access_log" {
 resource "aws_s3_bucket" "audit" {
   count  = var.s3_enabled ? 1 : 0
   bucket = "${var.resource_name_prefix}-audit-logs"
-  acl    = "private"
+  force_destroy = true
+  tags = var.tags
+}
 
-  server_side_encryption_configuration {
-    rule {
+resource "aws_s3_bucket_acl" "audit" {
+  count  = var.s3_enabled ? 1 : 0
+  bucket = aws_s3_bucket.audit[0].id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "audit" {
+  count  = var.s3_enabled ? 1 : 0
+  bucket = aws_s3_bucket.audit[0].bucket
+  rule {
       apply_server_side_encryption_by_default {
         sse_algorithm = "AES256"
       }
     }
-  }
-  force_destroy = true
-
-  logging {
-    target_bucket = aws_s3_bucket.access_log[0].id
-  }
-
-  versioning {
-    enabled = true
-  }
-
-  tags = var.tags
 }
+resource "aws_s3_bucket_logging" "audit" {
+  bucket = aws_s3_bucket.audit[0].id
+
+  target_bucket = aws_s3_bucket.access_log[0].id
+  target_prefix = "log/"
+}
+
+  resource "aws_s3_bucket_versioning" "audit" {
+  bucket = aws_s3_bucket.audit[0].id
+  versioning_configuration {
+    status = "Enabled"
+  }
+} 
 
 resource "aws_s3_bucket_public_access_block" "audit" {
   count = var.s3_enabled ? 1 : 0
