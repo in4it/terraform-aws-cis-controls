@@ -1,6 +1,7 @@
 resource "aws_cloudwatch_log_group" "cloudtrail_events" {
-  name = var.cloudtrail_log_group_name
-  tags = var.tags
+  name       = var.cloudtrail_log_group_name
+  kms_key_id = var.cloudwatch_logs_kms
+  tags       = var.tags
 }
 
 data "aws_iam_policy_document" "cloudtrail_key_policy" {
