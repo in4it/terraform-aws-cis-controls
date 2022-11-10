@@ -27,6 +27,11 @@ variable include_global_resource_types {
 }
 
 # CloudTrail
+
+variable cw_log_enabled {
+  default = true
+}
+
 variable cloudtrail_log_group_name {
   description = "CloudTrail LogGroup name"
 }
