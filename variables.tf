@@ -27,6 +27,16 @@ variable include_global_resource_types {
 }
 
 # CloudTrail
+
+variable cw_log_enabled {
+  default = true
+}
+
+variable "cloudwatch_logs_kms" {
+  description = "kms key for CW logs encryption"
+  default     = ""
+}
+
 variable cloudtrail_log_group_name {
   description = "CloudTrail LogGroup name"
 }
