@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "recorder_publish_policy" {
 
 resource "aws_iam_role_policy_attachment" "recorder_read_policy" {
   role       = aws_iam_role.recorder.id
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSConfigRole"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
 }
 
 resource "aws_config_configuration_recorder" "recorder" {
