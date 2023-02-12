@@ -66,7 +66,7 @@ resource "aws_s3_bucket_policy" "audit_log" {
 
 resource "aws_s3_bucket" "access_log" {
   count  = var.s3_enabled ? 1 : 0
-  bucket = "${var.resource_name_prefix}-access-logs"
+  bucket = "${var.resource_name_prefix}-${var.aws_account_id}-access-logs"
   force_destroy = true
   tags          = var.tags
 }
@@ -100,7 +100,7 @@ resource "aws_s3_bucket_public_access_block" "access_log" {
 
 resource "aws_s3_bucket" "audit" {
   count  = var.s3_enabled ? 1 : 0
-  bucket = "${var.resource_name_prefix}-audit-logs"
+  bucket = "${var.resource_name_prefix}-${var.aws_account_id}-audit-logs"
   force_destroy = true
   tags = var.tags
 }
