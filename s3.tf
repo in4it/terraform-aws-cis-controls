@@ -55,6 +55,34 @@ data "aws_iam_policy_document" "audit_log" {
       values   = ["bucket-owner-full-control"]
     }
   }
+  statement {
+    sid = "AllowSSLRequestsOnly"
+    principals {
+      type = "*"
+      identifiers = ["*"]
+    }
+    effect = "Deny"
+    actions = ["s3:*"]
+    resources = [
+      "${aws_s3_bucket.audit[0].arn}/*",
+      "${aws_s3_bucket.audit[0].arn}"
+    ]
+    condition {
+      test  = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+  statement {
+    sid = "S3DenyDeletePolicy"
+    principals {
+      type = "AWS"
+      identifiers = ["*"]
+    }
+    effect = "Deny"
+    actions = ["s3:DeleteBucket"]
+    resources = [aws_s3_bucket.audit[0].arn]
+  }
 }
 
 resource "aws_s3_bucket_policy" "audit_log" {
@@ -143,4 +171,40 @@ resource "aws_s3_bucket_public_access_block" "audit" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "access_log" {
+  count  = var.s3_enabled ? 1 : 0
+  bucket = aws_s3_bucket.access_log[0].id
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowSSLRequestsOnly",
+            "Effect": "Deny",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Action": "s3:*",
+            "Resource": [
+                "${aws_s3_bucket.access_log[0].arn}/*",
+                "${aws_s3_bucket.access_log[0].arn}"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        },
+        {
+            "Sid": "S3DenyDeletePolicy",
+            "Effect": "Deny",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Action": "s3:DeleteBucket",
+            "Resource": [aws_s3_bucket.access_log[0].arn]
+        }
+    ]
+  })
 }
