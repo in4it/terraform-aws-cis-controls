@@ -1,4 +1,5 @@
 resource "aws_cloudwatch_log_group" "cloudtrail_events" {
+  count      = var.cw_log_enabled ? 1 : 0
   name       = var.cloudtrail_log_group_name
   kms_key_id = var.cloudwatch_logs_kms
   tags       = var.tags
@@ -145,22 +146,24 @@ resource "aws_iam_role" "cloudwatch_delivery" {
 }
 
 resource "aws_iam_role_policy" "cloudwatch_delivery_policy" {
+  count  = var.cw_log_enabled ? 1 : 0
   name   = "${var.resource_name_prefix}-cloudtrail-cloudwatch-logs"
   role   = aws_iam_role.cloudwatch_delivery.id
-  policy = data.aws_iam_policy_document.cloudwatch_delivery_policy.json
+  policy = data.aws_iam_policy_document.cloudwatch_delivery_policy[0].json
 }
 
 data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
+  count = var.cw_log_enabled ? 1 : 0
   statement {
     sid       = "AWSCloudTrailCreateLogStream20141101"
     effect    = "Allow"
     actions   = ["logs:CreateLogStream"]
-    resources = ["arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:${aws_cloudwatch_log_group.cloudtrail_events.name}:log-stream:*"]
+    resources = ["arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:${aws_cloudwatch_log_group.cloudtrail_events[0].name}:log-stream:*"]
   }
   statement {
     sid       = "AWSCloudTrailPutLogEvents20141101"
     actions   = ["logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:${aws_cloudwatch_log_group.cloudtrail_events.name}:log-stream:*"]
+    resources = ["arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:${aws_cloudwatch_log_group.cloudtrail_events[0].name}:log-stream:*"]
   }
 }
 
@@ -170,7 +173,7 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
 # 2.7 – Ensure CloudTrail logs are encrypted at rest using AWS KMS CMKs
 
 resource "aws_cloudtrail" "cloudtrail" {
-  cloud_watch_logs_group_arn    = var.cw_log_enabled ? "${aws_cloudwatch_log_group.cloudtrail_events.arn}:*" : ""
+  cloud_watch_logs_group_arn    = var.cw_log_enabled ? "${aws_cloudwatch_log_group.cloudtrail_events[0].arn}:*" : ""
   cloud_watch_logs_role_arn     = var.cw_log_enabled ? aws_iam_role.cloudwatch_delivery.arn : ""
   name                          = "${var.resource_name_prefix}-trail"
   s3_key_prefix                 = "cloudtrail"
