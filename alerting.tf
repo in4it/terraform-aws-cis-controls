@@ -3,7 +3,7 @@
 # 1.1 – Avoid the use of the "root" account
 resource "aws_cloudwatch_log_metric_filter" "aws_cis_1_1_avoid_the_use_of_root_account" {
   count          = var.alerting_enabled ? 1 : 0
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   name           = "RootAccountUsage"
   pattern        = "{ $.userIdentity.type=\"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType !=\"AwsServiceEvent\" }"
   metric_transformation {
@@ -37,7 +37,7 @@ resource "aws_cloudwatch_log_metric_filter" "unauthorized_api_calls" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "UnauthorizedAPICalls"
   pattern        = "{ ($.errorCode = \"*UnauthorizedOperation\") || ($.errorCode = \"AccessDenied*\") }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "UnauthorizedAPICalls"
     namespace = "CISBenchmark"
@@ -67,7 +67,7 @@ resource "aws_cloudwatch_log_metric_filter" "no_mfa_console_signin" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "NoMFAConsoleSignin"
   pattern        = "{ ($.eventName = \"ConsoleLogin\") && ($.additionalEventData.MFAUsed != \"Yes\") }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "NoMFAConsoleSignin"
     namespace = var.alarm_namespace
@@ -97,7 +97,7 @@ resource "aws_cloudwatch_log_metric_filter" "root_usage" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "RootUsage"
   pattern        = "{ $.userIdentity.type = \"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType != \"AwsServiceEvent\" }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "RootUsage"
     namespace = var.alarm_namespace
@@ -127,7 +127,7 @@ resource "aws_cloudwatch_log_metric_filter" "iam_changes" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "IAMChanges"
   pattern        = "{($.eventName=DeleteGroupPolicy)||($.eventName=DeleteRolePolicy)||($.eventName=DeleteUserPolicy)||($.eventName=PutGroupPolicy)||($.eventName=PutRolePolicy)||($.eventName=PutUserPolicy)||($.eventName=CreatePolicy)||($.eventName=DeletePolicy)||($.eventName=CreatePolicyVersion)||($.eventName=DeletePolicyVersion)||($.eventName=AttachRolePolicy)||($.eventName=DetachRolePolicy)||($.eventName=AttachUserPolicy)||($.eventName=DetachUserPolicy)||($.eventName=AttachGroupPolicy)||($.eventName=DetachGroupPolicy)}"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "IAMChanges"
     namespace = var.alarm_namespace
@@ -157,7 +157,7 @@ resource "aws_cloudwatch_log_metric_filter" "cloudtrail_cfg_changes" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "CloudTrailCfgChanges"
   pattern        = "{ ($.eventName = CreateTrail) || ($.eventName = UpdateTrail) || ($.eventName = DeleteTrail) || ($.eventName = StartLogging) || ($.eventName = StopLogging) }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "CloudTrailCfgChanges"
     namespace = var.alarm_namespace
@@ -187,7 +187,7 @@ resource "aws_cloudwatch_log_metric_filter" "console_signin_failures" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "ConsoleSigninFailures"
   pattern        = "{ ($.eventName = ConsoleLogin) && ($.errorMessage = \"Failed authentication\") }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "ConsoleSigninFailures"
     namespace = var.alarm_namespace
@@ -217,7 +217,7 @@ resource "aws_cloudwatch_log_metric_filter" "disable_or_delete_cmk" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "DisableOrDeleteCMK"
   pattern        = "{ ($.eventSource = kms.amazonaws.com) && (($.eventName = DisableKey) || ($.eventName = ScheduleKeyDeletion)) }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "DisableOrDeleteCMK"
     namespace = var.alarm_namespace
@@ -247,7 +247,7 @@ resource "aws_cloudwatch_log_metric_filter" "s3_bucket_policy_changes" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "S3BucketPolicyChanges"
   pattern        = "{ ($.eventSource = s3.amazonaws.com) && (($.eventName = PutBucketAcl) || ($.eventName = PutBucketPolicy) || ($.eventName = PutBucketCors) || ($.eventName = PutBucketLifecycle) || ($.eventName = PutBucketReplication) || ($.eventName = DeleteBucketPolicy) || ($.eventName = DeleteBucketCors) || ($.eventName = DeleteBucketLifecycle) || ($.eventName = DeleteBucketReplication)) }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "S3BucketPolicyChanges"
     namespace = var.alarm_namespace
@@ -278,7 +278,7 @@ resource "aws_cloudwatch_log_metric_filter" "aws_config_changes" {
 
   name           = "AWSConfigChanges"
   pattern        = "{ ($.eventSource = config.amazonaws.com) && (($.eventName=StopConfigurationRecorder)||($.eventName=DeleteDeliveryChannel)||($.eventName=PutDeliveryChannel)||($.eventName=PutConfigurationRecorder)) }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
 
   metric_transformation {
     name      = "AWSConfigChanges"
@@ -311,7 +311,7 @@ resource "aws_cloudwatch_log_metric_filter" "security_group_changes" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "SecurityGroupChanges"
   pattern        = "{ ($.eventName = AuthorizeSecurityGroupIngress) || ($.eventName = AuthorizeSecurityGroupEgress) || ($.eventName = RevokeSecurityGroupIngress) || ($.eventName = RevokeSecurityGroupEgress) || ($.eventName = CreateSecurityGroup) || ($.eventName = DeleteSecurityGroup)}"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "SecurityGroupChanges"
     namespace = var.alarm_namespace
@@ -341,7 +341,7 @@ resource "aws_cloudwatch_log_metric_filter" "nacl_changes" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "NACLChanges"
   pattern        = "{ ($.eventName = CreateNetworkAcl) || ($.eventName = CreateNetworkAclEntry) || ($.eventName = DeleteNetworkAcl) || ($.eventName = DeleteNetworkAclEntry) || ($.eventName = ReplaceNetworkAclEntry) || ($.eventName = ReplaceNetworkAclAssociation) }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "NACLChanges"
     namespace = var.alarm_namespace
@@ -371,7 +371,7 @@ resource "aws_cloudwatch_log_metric_filter" "network_gw_changes" {
 
   name           = "NetworkGWChanges"
   pattern        = "{($.eventName=CreateRoute) || ($.eventName=CreateRouteTable) || ($.eventName=ReplaceRoute) || ($.eventName=ReplaceRouteTableAssociation) || ($.eventName=DeleteRouteTable) || ($.eventName=DeleteRoute) || ($.eventName=DisassociateRouteTable)}"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
 
   metric_transformation {
     name      = "NetworkGWChanges"
@@ -402,7 +402,7 @@ resource "aws_cloudwatch_log_metric_filter" "route_table_changes" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "RouteTableChanges"
   pattern        = "{ ($.eventName = CreateRoute) || ($.eventName = CreateRouteTable) || ($.eventName = ReplaceRoute) || ($.eventName = ReplaceRouteTableAssociation) || ($.eventName = DeleteRouteTable) || ($.eventName = DeleteRoute) || ($.eventName = DisassociateRouteTable) }"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "RouteTableChanges"
     namespace = var.alarm_namespace
@@ -433,7 +433,7 @@ resource "aws_cloudwatch_log_metric_filter" "vpc_changes" {
   count          = var.alerting_enabled ? 1 : 0
   name           = "VPCChanges"
   pattern        = "{($.eventName=CreateVpc) || ($.eventName=DeleteVpc) || ($.eventName=ModifyVpcAttribute) || ($.eventName=AcceptVpcPeeringConnection) || ($.eventName=CreateVpcPeeringConnection) || ($.eventName=DeleteVpcPeeringConnection) || ($.eventName=RejectVpcPeeringConnection) || ($.eventName=AttachClassicLinkVpc) || ($.eventName=DetachClassicLinkVpc) || ($.eventName=DisableVpcClassicLink) || ($.eventName=EnableVpcClassicLink)}"
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events.id
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events[0].id
   metric_transformation {
     name      = "VPCChanges"
     namespace = var.alarm_namespace
